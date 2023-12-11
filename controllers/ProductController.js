@@ -3,6 +3,7 @@ class ProductController{
     create = (req, res, next) => { 
         try {
             const {productName} = req.body 
+            abc() 
             res.status(200).json({
                     productName
             })   
