@@ -1,45 +1,67 @@
+const UserService = require("../services/UserService");
+
 class UserController{
     //Cac ham ma ta xu ly (arrow func)
-    create = (req, res, next) => { // xử lý cả lỗi nữa > try catch 
+    create = async (req, res, next) => { // xử lý cả lỗi nữa > try catch 
         try {
-            const {username, password} = req.body
+            const {username, email,phone,age} = req.body
+            //Goi den tang service 
+            let data = {
+                username, email,phone,age
+            }
+            const user = await UserService.create(data) // chạy xong lệnh thì ms đi tiếp code ở dưới -> await 
+            
             res.status(200).json({
-                username,
-                password
+                user 
             })  
         } catch (error) { // xay ra loi se ... , res cho postman/client
             throw error;
         }
     }
 
-    get = (req, res, next) => {
+    getAll = async (req, res, next) => {
         try {
-            const {page,sort} = req.query;
-            res.status(200).json({msg : `Get users ${page,sort}`})
-        } catch (error) { // xay ra loi se ... , res cho postman/client
-            throw error;
-        }
-    }
-
-    put = (req, res, next) => {
-        try {
-            const {newUsername, newPassword} = req.body 
+            //Gọi đến file Service 
+            const users = await UserService.getAll() 
             res.status(200).json({
-                newUsername,
-                newPassword
+                users // 1 mảng json 
             })  
-        } catch (error) { // xay ra loi se ... , res cho postman/client
+        } catch (error) { 
             throw error;
         }
     }
 
-    delete = (req, res, next) => {
+    update = async (req, res, next) => {
         try {
-            let id = req.params.id
-            res.status(200).json({
-                msg : `Delete ${id}`
-            })   
-        } catch (error) { // xay ra loi se ... , res cho postman/client
+            const {username, email,phone,age} = req.body
+            const {id} = req.params;
+            //Goi den tang service 
+            let data = {
+                username, email,phone,age
+            }
+            const result = await UserService.update(id,data) // dựa vào id cập nhật cho ai 
+            if(result){
+                res.status(200).json({'msg': 'Updated'})  
+            }else{
+                throw new Error('Update fail')
+            }
+            
+        }  catch (error) { 
+            throw error;
+        }
+    }
+
+    delete = async (req, res, next) => {
+        try {
+            const {id} = req.params
+            //Goi den tang service 
+            const result = await UserService.delete(id) // dựa vào id xóa ai 
+            if(result){
+                res.status(200).json({'msg': 'deleted'})  
+            }else{
+                throw new Error('Delete fail')
+            }
+        } catch (error) {
             throw error;
         }
     }

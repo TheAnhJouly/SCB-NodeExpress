@@ -1,48 +1,69 @@
+const ProductService = require("../services/ProductService")
+
 class ProductController{
     
-    create = (req, res, next) => { 
+    create = async (req, res, next) => { 
         try {
-            const {productName} = req.body 
-            abc() 
+            const {productName, manufacturer , productionYear , quantity ,price} = req.body 
+            let data = {
+                productName, manufacturer , productionYear , quantity ,price
+            }
+            const product = await ProductService.create(data)
+            
             res.status(200).json({
-                    productName
-            })   
+                product
+            })  
         } catch (error) { 
             throw error;
         }
     }
 
-    get = (req, res, next) => {
+    getAll = async (req, res, next) => {
         try {
-            const {page,sort} = req.query;
-            res.status(200).json({msg : `Get products ${page,sort}`})
-        } catch (error) { 
-            throw error;
-        }
-    }
-
-    put = (req, res, next) => {
-        try {
-            const {newProductname} = req.body 
+            const products = await ProductService.getAll() 
             res.status(200).json({
-                newProductname,
-            }) 
+                products 
+            })
         } catch (error) { 
             throw error;
         }
     }
 
-    delete = (req, res, next) => {
+
+    update = async (req, res, next) => {
         try {
-            let id = req.params.id
-            res.status(200).json({
-                msg : `Delete ${id}`
-            }) 
-        } catch (error) { 
+            const {productName, manufacturer , productionYear , quantity ,price} = req.body
+            const {id} = req.params;
+            //Goi den tang service 
+            let data = {
+                productName, manufacturer , productionYear , quantity ,price
+            }
+            const result = await ProductService.update(id,data) // dựa vào id cập nhật cho ai 
+            if(result){
+                res.status(200).json({'msg': 'Updated'})  
+            }else{
+                throw new Error('Update fail')
+            }
+            
+        }  catch (error) { 
             throw error;
         }
     }
 
+    delete = async (req, res, next) => {
+        try {
+            const {id} = req.params
+            //Goi den tang service 
+            const result = await ProductService.delete(id) // dựa vào id xóa ai 
+            if(result){
+                res.status(200).json({'msg': 'deleted'})  
+            }else{
+                throw new Error('Delete fail')
+            }
+        } catch (error) {
+            throw error;
+        }
+    }
 }
 
 module.exports = new ProductController();

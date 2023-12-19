@@ -7,8 +7,11 @@ const port = 3000;
 const API_BTVN1 = require('./BTVN/BTVN1/routes1')
 const API_BTVN2 = require('./BTVN/BTVN2/routes2')
 const API_V1 = require('./routes/v1') // chỉ trỏ như này sẽ vào file index.js
-const errorHandle = require('./middlewares/errorHandle')
+const errorHandle = require('./middlewares/errorHandle');
+const db = require('./configs/mongodb');
 
+//Connect db 
+db.connect();
 
 //Đang xử dụng express router 
 app.get('/',(req,res) =>{ 
